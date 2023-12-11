@@ -4,9 +4,9 @@
 const char* flag_template[] = {
     "             ##________________",
     "            //******/  /******/",
-    "           //***/        /***/",
+    "           //**/          /**/",
     "          //******/  /******/",
-    "         //******/  /******/",
+    "         //*****/    /*****/",
     "        //******/__/******/",
     "       //""""""""""""""""",
     "      //",
@@ -16,19 +16,13 @@ const char* flag_template[] = {
 };
 const size_t flag_template_size = sizeof(flag_template)/sizeof(*flag_template);
 
-enum make_flag_error {
-    NAME_ERROR      = 1,
-    FLAG_BUFF_ERROR = 2,
-    WRITE_ERROR     = 3,
-};
-
 int space_fill(char* buff, size_t len)
 {
-    int result = 0;
-    for (size_t s = 0; s < len && result >= 0; ++s) {
-        result += sprintf(buff + result, "%s", " ");
+    int len_sum = 0;
+    for (size_t s = 0; s < len && len_sum >= 0; ++s) {
+        len_sum += sprintf(buff + len_sum, "%s", " ");
     }
-    return result;
+    return len_sum;
 }
 
 int make_flag(const char* name, char* flag_buff)
@@ -36,19 +30,19 @@ int make_flag(const char* name, char* flag_buff)
     size_t name_len = strlen(name);
 
     if (name_len == 0) {
-        return -NAME_ERROR;
+        return 0;
     }
 
     size_t f = 0;
-    int len_acc = 0;
-    for (; f < flag_template_size - 1 && len_acc >= 0; ++f) {
-        len_acc += space_fill(flag_buff + len_acc, name_len);
-        len_acc += sprintf(flag_buff + len_acc, "%s\n", flag_template[f]);
+    int len_sum = 0;
+    for (; f < flag_template_size - 1 && len_sum >= 0; ++f) {
+        len_sum += space_fill(flag_buff + len_sum, name_len);
+        len_sum += sprintf(flag_buff + len_sum, "%s\n", flag_template[f]);
     }
 
-    len_acc += sprintf(flag_buff + len_acc, "%s%s\n", name, flag_template[f]);
+    len_sum += sprintf(flag_buff + len_sum, "%s%s\n", name, flag_template[f]);
 
-    return len_acc;
+    return len_sum;
 }
 
 int main(int argc, char *argv[])
